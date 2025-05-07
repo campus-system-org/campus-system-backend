@@ -6,9 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+//swagger
+builder.Services.AddSwaggerOptions(builder.Configuration);
 
 //mongodb setting
 builder.Services.Add_MongoDb_Context(builder.Configuration);
@@ -16,11 +16,16 @@ builder.Services.Add_MongoDb_Context(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.SwaggerEndpoint("/swagger/General/swagger.json", "General");
+    options.SwaggerEndpoint("/swagger/Developer/swagger.json", "Developer");
+
+    //允許授權可以在同一個瀏覽器對話中保存
+    options.EnablePersistAuthorization();
+});
 
 //全域錯誤處理
 app.UseMiddleware<GlobalExceptionMiddleware>();
