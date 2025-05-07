@@ -1,4 +1,4 @@
-﻿namespace Campus_System_WebApi.Exceptions
+﻿namespace Campus_System_WebApi
 {
     /// <summary>
     /// 客製化錯訊

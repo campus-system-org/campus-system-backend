@@ -1,4 +1,5 @@
 ﻿using Campus_System_Database_Model;
+using Campus_System_WebApi.Services;
 using Campus_System_WebApi.Swaggers;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson.Serialization;
@@ -8,6 +9,15 @@ namespace Campus_System_WebApi.Extensions
 {
     public static class WebApplicationBuilderExtension
     {
+        public static IServiceCollection Add_Dependency_Injection(this IServiceCollection service, IConfiguration configuration)
+        {
+            //service
+            service.AddScoped<LoginService>();
+            service.AddScoped<DeveloperService>();
+
+            return service;
+        }
+
         public static IServiceCollection Add_MongoDb_Context(this IServiceCollection service, 
                                                              IConfiguration configuration)
         {

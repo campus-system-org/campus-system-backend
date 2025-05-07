@@ -1,5 +1,6 @@
 ﻿
 using Campus_System_Database_Model.Data;
+using MongoGogo.Connection;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
@@ -7,9 +8,40 @@ namespace Campus_System_WebApi.Services
 {
     public class DeveloperService
     {
+        private readonly IGoCollection<UserEntity> _userCollection;
+
+        public DeveloperService(IGoCollection<UserEntity> userCollection)
+        {
+            this._userCollection = userCollection;
+        }
+
         internal async Task CreateUser(DeveloperCreateUserRequest request)
         {
-            throw new NotImplementedException();
+            //檢查存在性
+            var emails = request.Users.Select(user => user.Email).ToArray();
+
+            var currentUserEntities = await _userCollection.FindAsync(filter: user => emails.Contains(user.Email),
+                                                                      projection: projecter => projecter.Include(user => user.Email));
+            if (currentUserEntities.Any()) 
+            {
+                throw new CustomException($"以下信箱的帳號已存在: ['{string.Join(",", currentUserEntities.Select(user => user.Email))}']");
+            }
+
+            //批次建立帳號
+            var now = DateTime.UtcNow;
+            var newUsers = request.Users.Select(user => new UserEntity
+            {
+                Email = user.Email,
+                Name = user.Name,
+                Password = user.Password,
+                Role = user._UserRole,
+                Status = Campus_System_Database_Model.DocStatus.active,
+                Telephone = user.Telephone,
+                CreateTime = now,
+                UpdateTime = null
+            });
+            
+            await _userCollection.InsertManyAsync(newUsers);
         }
     }
 

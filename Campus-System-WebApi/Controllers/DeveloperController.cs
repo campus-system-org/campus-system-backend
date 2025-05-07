@@ -22,7 +22,7 @@ namespace Campus_System_WebApi.Controllers
         /// 建立任意權限用戶
         /// </summary>
         /// <returns></returns>
-        [HttpPost("create-user")]
+        [HttpPost("create-users")]
         public async Task<IActionResult> CreateUser(DeveloperCreateUserRequest request)
         {
             await _service.CreateUser(request);

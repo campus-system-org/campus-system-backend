@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+//di
+builder.Services.Add_Dependency_Injection(builder.Configuration);
+
 //swagger
 builder.Services.AddSwaggerOptions(builder.Configuration);
 

@@ -1,5 +1,4 @@
-﻿using Campus_System_WebApi.Exceptions;
-using Campus_System_WebApi.Services.Common;
+﻿using Campus_System_WebApi.Services.Common;
 using System.Text.Json;
 
 namespace Campus_System_WebApi.Controllers.Middlewares
