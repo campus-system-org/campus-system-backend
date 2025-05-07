@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Campus_System_WebApi.Controllers
 {
     [Route("login")]
+    [ApiExplorerSettings(GroupName = "General")]
     public class LoginController : NoAuthControllerBase
     {
         private readonly LoginService _service;

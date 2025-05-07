@@ -35,7 +35,7 @@ namespace Campus_System_WebApi.Services
     public class LoginCreatorRequest
     {
         [JsonPropertyName("email")]
-        [DefaultValue("email@example.com")]
+        [DefaultValue("信箱")]
         public string Email { get; set; }
 
         [JsonPropertyName("password")]
@@ -52,7 +52,7 @@ namespace Campus_System_WebApi.Services
     public class LoginAdminRequest
     {
         [JsonPropertyName("email")]
-        [DefaultValue("email@example.com")]
+        [DefaultValue("信箱")]
         public string Email { get; set; }
 
         [JsonPropertyName("password")]
@@ -70,7 +70,7 @@ namespace Campus_System_WebApi.Services
     public class LoginManagerRequest
     {
         [JsonPropertyName("email")]
-        [DefaultValue("email@example.com")]
+        [DefaultValue("信箱")]
         public string Email { get; set; }
 
         [JsonPropertyName("password")]
@@ -87,7 +87,7 @@ namespace Campus_System_WebApi.Services
     public class LoginTeacherRequest
     {
         [JsonPropertyName("email")]
-        [DefaultValue("email@example.com")]
+        [DefaultValue("信箱")]
         public string Email { get; set; }
 
         [JsonPropertyName("password")]
@@ -105,7 +105,7 @@ namespace Campus_System_WebApi.Services
     public class LoginStudentRequest
     {
         [JsonPropertyName("email")]
-        [DefaultValue("email@example.com")]
+        [DefaultValue("信箱")]
         public string Email { get; set; }
 
         [JsonPropertyName("password")]
