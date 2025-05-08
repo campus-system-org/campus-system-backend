@@ -27,8 +27,8 @@ namespace Campus_System_WebApi.Services.Common
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public TData Data { get; set; }
 
-        [JsonPropertyName("total")]
-        public int Total { get; set; }
+        [JsonPropertyName("total_page")]
+        public int TotalPage { get; set; }
 
         [JsonPropertyName("page")]
         public int Page { get; set; }
@@ -39,7 +39,7 @@ namespace Campus_System_WebApi.Services.Common
         public PagedResponseBase(TData data)
         {
             Data = data;
-            Total = data.Total;
+            TotalPage = data.TotalPage;
             Page = data.Page;
             PageSize = data.PageSize;
         }
@@ -47,7 +47,7 @@ namespace Campus_System_WebApi.Services.Common
 
     public class PagedResponseBase
     {
-        internal int Total { get; set; }
+        internal int TotalPage { get; set; }
 
         internal int Page { get; set; }
 

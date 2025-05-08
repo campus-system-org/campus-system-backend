@@ -18,10 +18,10 @@ namespace Campus_System_WebApi.Controllers
             this._service = service;
         }
 
-        [HttpGet]
-        public async Task<PagedResponseBase<UserManagementGetListResponse>> GetList()
+        [HttpPost("get-list")]
+        public async Task<PagedResponseBase<UserManagementGetListResponse>> GetList([FromBody]UserManagementGetListRequest request)
         {
-            UserManagementGetListResponse response = await _service.GetList(this._CurrentUser);
+            UserManagementGetListResponse response = await _service.GetList(request);
             return new PagedResponseBase<UserManagementGetListResponse>(response);
         }
     }
