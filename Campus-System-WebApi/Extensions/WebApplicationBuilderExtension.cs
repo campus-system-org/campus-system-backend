@@ -56,8 +56,9 @@ namespace Campus_System_WebApi.Extensions
                     Scheme = "CampusSystemToken"
                 });
 
-                //驗證按鍵的顯示
-                option.OperationFilter<AuthorizeCheckOperationFilter>();
+                //其他選項
+                option.OperationFilter<AuthorizeCheckOperationFilter>(); //驗證按鍵的顯示
+                option.OperationFilter<RoleRestrictSwaggerOperationFilter>(); //動態顯示rbac的限制
 
                 //多頁面
                 option.SwaggerDoc("General", new OpenApiInfo

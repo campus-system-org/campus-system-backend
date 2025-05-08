@@ -36,6 +36,15 @@ namespace Campus_System_WebApi.Services
             });
         }
 
+        internal async Task EditOne(string userId, UserManagementEditOneRequest request)
+        {
+            bool emailExists = await _userCollection.CountAsync(filter: user => user.Id == userId) > 0;
+            if (!emailExists) throw new CustomException("此用戶不存在", 400);
+
+            await _userCollection.UpdateOneAsync(filter: user => user.Id == userId,
+                                                 updateDefinitionBuilder: updater => updater.Set(user => user.Role, request._UserRole));
+        }
+
         internal async Task<UserManagementGetListResponse> GetList(UserManagementGetListRequest request)
         {
             const int pageSize = 30;
@@ -121,6 +130,15 @@ namespace Campus_System_WebApi.Services
         [DefaultValue("電話。(可為空值)")]
         public string? Telephone { get; set; }
 
+        [JsonPropertyName("role")]
+        [DefaultValue(@"身分。 可選值: ['creator','admin','manager','teacher','student']")]
+        public string Role { get; set; }
+
+        internal UserRole _UserRole => Role.ToEnum<UserRole>();
+    }
+
+    public class UserManagementEditOneRequest
+    {
         [JsonPropertyName("role")]
         [DefaultValue(@"身分。 可選值: ['creator','admin','manager','teacher','student']")]
         public string Role { get; set; }

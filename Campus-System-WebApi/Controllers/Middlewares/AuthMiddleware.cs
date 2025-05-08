@@ -38,8 +38,12 @@ namespace Campus_System_WebApi.Controllers.Middlewares
 
             //檢驗有沒有被停權
             var userEntity = await _userCollection.FindOneAsync(filter: user => user.Id == tokenModel.Id,
-                                                                projection: projecter => projecter.Include(user => user.Status)) ?? throw new CustomException("token 錯誤", 401);
+                                                                projection: projecter => projecter.Include(user => user.Status)
+                                                                                                  .Include(user => user.Role)) ?? throw new CustomException("token 錯誤", 401);
             if (userEntity.Status != Campus_System_Database_Model.DocStatus.active) throw new CustomException("此帳號已被停權", 403);
+
+            //存下新的role，因為其值可能隨時會改
+            tokenModel.Role = userEntity.Role;
 
             //存下token model
             context.Items.Add(key: USER_Model_KEY, value: tokenModel);
