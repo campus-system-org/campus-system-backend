@@ -56,7 +56,7 @@ namespace Campus_System_WebApi.Extensions
                     Scheme = "CampusSystemToken"
                 });
 
-                //
+                //驗證按鍵的顯示
                 option.OperationFilter<AuthorizeCheckOperationFilter>();
 
                 //多頁面
@@ -72,6 +72,9 @@ namespace Campus_System_WebApi.Extensions
                     Version = "v1",
                     Description = "開發者專用"
                 });
+
+                //顯示swagger的response.description
+                option.EnableAnnotations();
             });
 
             return service; 

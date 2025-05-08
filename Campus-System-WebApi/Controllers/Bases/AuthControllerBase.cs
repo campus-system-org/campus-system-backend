@@ -10,6 +10,7 @@ namespace Campus_System_WebApi.Controllers.Bases
     /// 需驗證的路由
     /// </summary>
     [AuthButton]
+    [ApiController]
     [ApiExplorerSettings(GroupName = "General")]
     [MiddlewareFilter(typeof(AuthPipeline))]
     public class AuthControllerBase : ControllerBase

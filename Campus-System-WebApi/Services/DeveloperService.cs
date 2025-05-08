@@ -71,7 +71,7 @@ namespace Campus_System_WebApi.Services
         public string? Telephone { get; set; }
 
         [JsonPropertyName("role")]
-        [DefaultValue(@"身分。 可選值: ['creator','admin','manager','teacher','student',]")]
+        [DefaultValue(@"身分。 可選值: ['creator','admin','manager','teacher','student']")]
         public string Role { get; set; }
 
         internal UserRole _UserRole => Role.ToEnum<UserRole>();

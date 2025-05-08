@@ -2,6 +2,7 @@
 using Campus_System_WebApi.Processors;
 using Campus_System_WebApi.Services.Common;
 using MongoGogo.Connection;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 using ZstdSharp.Unsafe;
 
@@ -14,6 +15,25 @@ namespace Campus_System_WebApi.Services
         public UserManagementService(IGoCollection<UserEntity> userCollection)
         {
             this._userCollection = userCollection;
+        }
+
+        internal async Task CreateOne(UserManagementCreateOneRequest request)
+        {
+            bool emailExists = await _userCollection.CountAsync(filter: user => user.Email == request.Email) > 0;
+            if (emailExists) throw new CustomException("此用戶已存在", 409);
+
+            await _userCollection.InsertOneAsync(new UserEntity
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = request.Email.ToLower(),
+                Name = request.Name,
+                Password = request.Password,
+                Role = request._UserRole,
+                Status = Campus_System_Database_Model.DocStatus.active,
+                Telephone = request.Telephone,
+                CreateTime = DateTime.UtcNow,
+                UpdateTime = null
+            });
         }
 
         internal async Task<UserManagementGetListResponse> GetList(UserManagementGetListRequest request)
@@ -81,5 +101,30 @@ namespace Campus_System_WebApi.Services
 
         [JsonPropertyName("create_time")]
         public DateTime CreateTime { get; set; }
+    }
+
+    public class UserManagementCreateOneRequest
+    {
+        [JsonPropertyName("email")]
+        [DefaultValue("信箱")]
+        public string Email { get; set; }
+
+        [JsonPropertyName("name")]
+        [DefaultValue("名字")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("password")]
+        [DefaultValue("密碼")]
+        public string Password { get; set; }
+
+        [JsonPropertyName("telephone")]
+        [DefaultValue("電話。(可為空值)")]
+        public string? Telephone { get; set; }
+
+        [JsonPropertyName("role")]
+        [DefaultValue(@"身分。 可選值: ['creator','admin','manager','teacher','student']")]
+        public string Role { get; set; }
+
+        internal UserRole _UserRole => Role.ToEnum<UserRole>();
     }
 }
