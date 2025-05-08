@@ -1,4 +1,6 @@
-﻿using Campus_System_Database_Model.Data;
+﻿using Amazon.Runtime.Internal;
+using Campus_System_Database_Model;
+using Campus_System_Database_Model.Data;
 using Campus_System_WebApi.Processors;
 using Campus_System_WebApi.Services.Common;
 using MongoGogo.Connection;
@@ -15,6 +17,37 @@ namespace Campus_System_WebApi.Services
         public UserManagementService(IGoCollection<UserEntity> userCollection)
         {
             this._userCollection = userCollection;
+        }
+
+        internal async Task<UserManagementGetListResponse> GetList(UserManagementGetListRequest request)
+        {
+            const int pageSize = 30;
+
+            var totalCount = (int)await _userCollection.CountAsync(_ => true);
+
+            var userEntities = await _userCollection.FindAsync(filter: _ => true,
+                                                               goFindOption: new GoFindOption<UserEntity>
+                                                               {
+                                                                   Skip = (request.PagedInfo.Page - 1) * pageSize,
+                                                                   Limit = pageSize
+                                                               });
+
+            return new UserManagementGetListResponse
+            {
+                Page = request.PagedInfo.Page,
+                PageSize = pageSize,
+                TotalPage = (int)Math.Ceiling(totalCount / (double)pageSize),
+                Users = userEntities.Select(user => new UserManagementGetListResponseUser
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Name = user.Name,
+                    CreateTime = user.CreateTime,
+                    Telephone = user.Telephone,
+                    Role = user.Role.ToString(),
+                    Status = user.Status.ToString()
+                }).ToList()
+            };
         }
 
         internal async Task CreateOne(UserManagementCreateOneRequest request)
@@ -41,39 +74,31 @@ namespace Campus_System_WebApi.Services
             bool emailExists = await _userCollection.CountAsync(filter: user => user.Id == userId) > 0;
             if (!emailExists) throw new CustomException("此用戶不存在", 400);
 
-            await _userCollection.UpdateOneAsync(filter: user => user.Id == userId,
-                                                 updateDefinitionBuilder: updater => updater.Set(user => user.Role, request._UserRole));
+            var bulker = _userCollection.NewBulker();
+
+            if(request.IsActive != null)
+            {
+                var status = request.IsActive.Value ? DocStatus.active : DocStatus.inactive;
+
+                bulker.UpdateOne(filter: user => user.Id == userId,
+                                 updateDefinitionBuilder: updater => updater.Set(user => user.Status, status));
+            }
+            if(request._UserRole != null)
+            {
+                bulker.UpdateOne(filter: user => user.Id == userId,
+                                 updateDefinitionBuilder: updater => updater.Set(user => user.Role, request._UserRole));
+            }
+
+            await bulker.SaveChangesAsync();
         }
 
-        internal async Task<UserManagementGetListResponse> GetList(UserManagementGetListRequest request)
+        internal async Task DeleteOne(string userId)
         {
-            const int pageSize = 30;
-            
-            var totalCount = (int)await _userCollection.CountAsync(_ => true);
+            bool emailExists = await _userCollection.CountAsync(filter: user => user.Id == userId) > 0;
+            if (!emailExists) throw new CustomException("此用戶不存在", 400);
 
-            var userEntities = await _userCollection.FindAsync(filter: _ => true,
-                                                               goFindOption: new GoFindOption<UserEntity>
-                                                               {
-                                                                   Skip = (request.PagedInfo.Page - 1) * pageSize,
-                                                                   Limit = pageSize
-                                                               });
-
-            return new UserManagementGetListResponse
-            {
-                Page = request.PagedInfo.Page,
-                PageSize = pageSize,
-                TotalPage = (int)Math.Ceiling(totalCount / (double)pageSize),
-                Users = userEntities.Select(user => new UserManagementGetListResponseUser
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    Name = user.Name,
-                    CreateTime = user.CreateTime,
-                    Telephone = user.Telephone,
-                    Role = user.Role.ToString(),
-                    Status = user.Status.ToString()
-                }).ToList()
-            };
+            await _userCollection.UpdateOneAsync(filter: user => user.Id == userId,
+                                                 updateDefinitionBuilder: updater => updater.Set(user => user.Status, Campus_System_Database_Model.DocStatus.inactive));
         }
     }
 
@@ -141,8 +166,11 @@ namespace Campus_System_WebApi.Services
     {
         [JsonPropertyName("role")]
         [DefaultValue(@"身分。 可選值: ['creator','admin','manager','teacher','student']")]
-        public string Role { get; set; }
+        public string? Role { get; set; }
 
-        internal UserRole _UserRole => Role.ToEnum<UserRole>();
+        [JsonPropertyName("is_active")]
+        public bool? IsActive { get; set; }
+
+        internal UserRole? _UserRole => Role?.ToEnum<UserRole>();
     }
 }

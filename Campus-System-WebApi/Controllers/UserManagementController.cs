@@ -1,4 +1,5 @@
-﻿using Campus_System_Database_Model.Data;
+﻿using Amazon.Runtime.Internal;
+using Campus_System_Database_Model.Data;
 using Campus_System_WebApi.ActionFilters;
 using Campus_System_WebApi.Controllers.Bases;
 using Campus_System_WebApi.Services;
@@ -48,7 +49,18 @@ namespace Campus_System_WebApi.Controllers
             return new ResponseBase();
         }
 
-        [HttpPost("edit-one")]
+        /// <summary>
+        /// 編輯單一使用者。
+        /// </summary>
+        /// <remarks>
+        /// 可處理:
+        /// 1.role處理
+        /// 2.帳號是否被刪除 (active的boolean)
+        /// </remarks>
+        /// <param name="userId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPatch("edit-one")]
         [RoleRestrict(UserRole.creator, UserRole.admin)]
         public async Task<ResponseBase> EditOne([FromQuery(Name = "user_id")] string userId, 
                                                 UserManagementEditOneRequest request)
