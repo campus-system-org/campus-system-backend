@@ -1,4 +1,5 @@
 ﻿using Campus_System_Database_Model;
+using Campus_System_WebApi.Processors;
 using Campus_System_WebApi.Services;
 using Campus_System_WebApi.Swaggers;
 using Microsoft.OpenApi.Models;
@@ -14,6 +15,10 @@ namespace Campus_System_WebApi.Extensions
             //service
             service.AddScoped<LoginService>();
             service.AddScoped<DeveloperService>();
+
+            //processors
+            service.AddSingleton<TokenProcessor>();
+            service.AddSingleton<StringEncryptor>();
 
             return service;
         }

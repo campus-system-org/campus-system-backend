@@ -18,7 +18,7 @@ namespace Campus_System_WebApi.Services
         internal async Task CreateUser(DeveloperCreateUserRequest request)
         {
             //檢查存在性
-            var emails = request.Users.Select(user => user.Email).ToArray();
+            var emails = request.Users.Select(user => user.Email.ToLower()).ToArray();
 
             var currentUserEntities = await _userCollection.FindAsync(filter: user => emails.Contains(user.Email),
                                                                       projection: projecter => projecter.Include(user => user.Email));
@@ -31,7 +31,7 @@ namespace Campus_System_WebApi.Services
             var now = DateTime.UtcNow;
             var newUsers = request.Users.Select(user => new UserEntity
             {
-                Email = user.Email,
+                Email = user.Email.ToLower(),
                 Name = user.Name,
                 Password = user.Password,
                 Role = user._UserRole,
