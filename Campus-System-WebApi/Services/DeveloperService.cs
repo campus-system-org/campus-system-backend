@@ -31,6 +31,7 @@ namespace Campus_System_WebApi.Services
             var now = DateTime.UtcNow;
             var newUsers = request.Users.Select(user => new UserEntity
             {
+                Id = Guid.NewGuid().ToString(),
                 Email = user.Email.ToLower(),
                 Name = user.Name,
                 Password = user.Password,

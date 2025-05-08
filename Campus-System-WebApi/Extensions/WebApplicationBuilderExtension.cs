@@ -15,10 +15,12 @@ namespace Campus_System_WebApi.Extensions
             //service
             service.AddScoped<LoginService>();
             service.AddScoped<DeveloperService>();
+            service.AddScoped<UserManagementService>();
 
             //processors
             service.AddSingleton<TokenProcessor>();
             service.AddSingleton<StringEncryptor>();
+            
 
             return service;
         }

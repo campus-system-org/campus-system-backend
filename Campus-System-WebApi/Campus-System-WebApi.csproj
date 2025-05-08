@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Pipelines\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Campus-System-Database Model\Campus-System-Database Model\Campus-System-Database Model.csproj" />
   </ItemGroup>
 

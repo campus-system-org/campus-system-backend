@@ -23,7 +23,7 @@ namespace Campus_System_WebApi.Services
         {
             var userEntity = await _userCollection.FindOneAsync(filter: user => user.Email == request.Email.ToLower() &&
                                                                                 user.Password == request.Password,
-                                                                projection: projecter => projecter.Include(user => user._id)
+                                                                projection: projecter => projecter.Include(user => user.Id)
                                                                                                   .Include(user => user.Role)
                                                                                                   .Include(user => user.Status)) ?? throw new CustomException("信箱或密碼錯誤", 401);
 
@@ -42,7 +42,7 @@ namespace Campus_System_WebApi.Services
         {
             var userEntity = await _userCollection.FindOneAsync(filter: user => user.Email == request.Email.ToLower() &&
                                                                     user.Password == request.Password,
-                                                    projection: projecter => projecter.Include(user => user._id)
+                                                    projection: projecter => projecter.Include(user => user.Id)
                                                                                       .Include(user => user.Role)
                                                                                       .Include(user => user.Status)) ?? throw new CustomException("信箱或密碼錯誤", 401);
 
@@ -60,10 +60,10 @@ namespace Campus_System_WebApi.Services
         internal async Task<LoginManagerResponse> LoginManager(LoginManagerRequest request)
         {
             var userEntity = await _userCollection.FindOneAsync(filter: user => user.Email == request.Email.ToLower() &&
-                                                        user.Password == request.Password,
-                                        projection: projecter => projecter.Include(user => user._id)
-                                                                          .Include(user => user.Role)
-                                                                          .Include(user => user.Status)) ?? throw new CustomException("信箱或密碼錯誤", 401);
+                                                                                user.Password == request.Password,
+                                                                projection: projecter => projecter.Include(user => user.Id)
+                                                                                                  .Include(user => user.Role)
+                                                                                                  .Include(user => user.Status)) ?? throw new CustomException("信箱或密碼錯誤", 401);
 
             if (userEntity.Status == Campus_System_Database_Model.DocStatus.inactive) throw new CustomException("此帳號已被停權", 403);
             if (userEntity.Role != UserRole.manager) throw new CustomException($"登入身分不正確, 請以 {UserRole.manager} 登入");
@@ -80,7 +80,7 @@ namespace Campus_System_WebApi.Services
         {
             var userEntity = await _userCollection.FindOneAsync(filter: user => user.Email == request.Email.ToLower() &&
                                                                                 user.Password == request.Password,
-                                                                projection: projecter => projecter.Include(user => user._id)
+                                                                projection: projecter => projecter.Include(user => user.Id)
                                                                                                   .Include(user => user.Role)
                                                                                                   .Include(user => user.Status)) ?? throw new CustomException("信箱或密碼錯誤", 401);
 
@@ -99,7 +99,7 @@ namespace Campus_System_WebApi.Services
         {
             var userEntity = await _userCollection.FindOneAsync(filter: user => user.Email == request.Email.ToLower() &&
                                                                                 user.Password == request.Password,
-                                                                projection: projecter => projecter.Include(user => user._id)
+                                                                projection: projecter => projecter.Include(user => user.Id)
                                                                                                   .Include(user => user.Role)
                                                                                                   .Include(user => user.Status)) ?? throw new CustomException("信箱或密碼錯誤", 401);
 

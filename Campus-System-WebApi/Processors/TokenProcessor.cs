@@ -21,11 +21,27 @@ namespace Campus_System_WebApi.Processors
             return _stringEncryptor.Encrypt(jsonString);
         }
 
+        public bool TryValidateToken(string token, out UserModel tokenModel)
+        {
+            try
+            {
+                var jsonString = _stringEncryptor.Decrypt(token);
+                tokenModel = JsonSerializer.Deserialize<UserModel>(jsonString)!;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                tokenModel = default;
+                return false;
+            }
+        }
+
         private static UserModel ToUserModel(UserEntity user)
         {
             return new UserModel
             {
-                Id = user._id,
+                Id = user.Id,
                 Role = user.Role
             };
         }
@@ -33,7 +49,7 @@ namespace Campus_System_WebApi.Processors
 
     public class UserModel
     {
-        public ObjectId Id { get; set; }
+        public string Id { get; set; }
 
         public UserRole Role { get; set; }
     }

@@ -8,8 +8,13 @@ namespace Campus_System_Database_Model.Data
     /// 使用者帳號
     /// </summary>
     [MongoCollection(typeof(CampusSystemMongoContext.Data), "User")]
-    public class UserEntity : GoDocument
+    public class UserEntity
     {
+        [BsonId]
+        [BsonElement("_id")]
+        [BsonIgnoreIfDefault]
+        public string Id { get; set; }
+
         [BsonElement("name")]
         public string Name { get; set; }
 
